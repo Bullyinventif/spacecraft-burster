@@ -8,7 +8,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background: #020817;
+  background: linear-gradient(135deg, #020817 0%, #0a1628 50%, #020817 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,35 +18,53 @@ body {
   overflow: hidden;
   user-select: none;
   color: #fff;
+  position: relative;
 }
 
-/* HUD - toujours visible en haut */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, rgba(147, 51, 234, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
 #hud {
   position: fixed;
-  top: 12px;
+  top: 16px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 12px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 1px;
   z-index: 10;
   flex-wrap: wrap;
   justify-content: center;
-  background: rgba(2, 8, 23, 0.85);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  padding: 12px 20px;
-  border: 1px solid rgba(125, 211, 252, 0.2);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(125, 211, 252, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 #hud span {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(125, 211, 252, 0.2);
-  padding: 4px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
+  transition: all 0.2s;
+}
+
+#hud span:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(125, 211, 252, 0.4);
 }
 
 #hud .val {
@@ -54,7 +72,6 @@ body {
   font-weight: bold;
 }
 
-/* Canvas - plein écran */
 canvas {
   display: block;
   width: 100vw;
@@ -62,24 +79,25 @@ canvas {
   cursor: crosshair;
 }
 
-/* Wave flash */
 .wave-flash {
   position: fixed;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 26px;
+  font-size: 32px;
   font-family: 'Courier New', monospace;
   font-weight: bold;
-  letter-spacing: 4px;
+  letter-spacing: 6px;
   pointer-events: none;
   z-index: 15;
   opacity: 0;
-  transition: opacity 0.4s;
-  text-shadow: 0 0 20px currentColor;
+  transition: all 0.3s;
+  text-shadow: 
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 40px currentColor;
 }
 
-/* Overlay - menu principal */
 #overlay {
   position: fixed;
   inset: 0;
@@ -88,158 +106,193 @@ canvas {
   align-items: center;
   justify-content: center;
   z-index: 20;
-  background: rgba(2, 8, 23, 0.95);
-  backdrop-filter: blur(8px);
+  background: rgba(2, 8, 23, 0.98);
+  backdrop-filter: blur(12px);
 }
 
 #overlay.hidden {
   display: none;
 }
 
-/* Layout du menu principal - 3 colonnes */
 #startContainer {
   display: flex;
   width: 90%;
   max-width: 1200px;
   gap: 24px;
   align-items: flex-start;
-  padding: 20px;
+  padding: 24px;
 }
 
-/* Colonne de gauche - Bouton Jouer + Difficulté */
 #leftColumn {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  min-width: 250px;
+  min-width: 280px;
 }
 
-/* Colonne de droite - Top 15 */
 #rightColumn {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 300px;
+  min-width: 320px;
 }
 
-/* Panels */
 .panel {
-  background: rgba(2, 8, 23, 0.97);
-  border: 1.5px solid rgba(125, 211, 252, 0.35);
-  border-radius: 16px;
-  padding: 28px 36px;
+  background: rgba(5, 15, 30, 0.95);
+  border: 2px solid rgba(125, 211, 252, 0.4);
+  border-radius: 20px;
+  padding: 32px 40px;
   text-align: center;
   color: #fff;
-  box-shadow: 0 0 40px rgba(125, 211, 252, 0.1);
+  box-shadow: 
+    0 0 60px rgba(125, 211, 252, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(125, 211, 252, 0.03) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .panel h1 {
-  font-size: 24px;
+  font-size: 28px;
   color: #7dd3fc;
-  margin-bottom: 10px;
-  letter-spacing: 3px;
+  margin-bottom: 12px;
+  letter-spacing: 4px;
   text-transform: uppercase;
+  position: relative;
+  text-shadow: 0 0 20px rgba(125, 211, 252, 0.5);
 }
 
 .panel .sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
-  margin-bottom: 20px;
-  line-height: 1.6;
+  margin-bottom: 24px;
+  line-height: 1.7;
 }
 
 .score-big {
-  font-size: 48px;
+  font-size: 56px;
   color: #fbbf24;
   font-weight: bold;
-  margin: 8px 0;
-  text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+  margin: 12px 0;
+  text-shadow: 
+    0 0 20px rgba(251, 191, 36, 0.5),
+    0 0 40px rgba(251, 191, 36, 0.3);
 }
 
-/* Boutons */
 .btn {
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  background: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 14px 32px;
-  font-size: 15px;
+  border-radius: 12px;
+  padding: 16px 36px;
+  font-size: 16px;
   font-family: 'Courier New', monospace;
   cursor: pointer;
-  letter-spacing: 2px;
-  transition: all 0.2s;
+  letter-spacing: 3px;
+  transition: all 0.25s;
   width: 100%;
-  font-weight: bold;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.btn:hover::before {
+  transform: translateX(100%);
 }
 
 .btn:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
+  opacity: 0.95;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
 }
 
 .btn:active {
-  transform: translateY(0);
+  transform: translateY(1px);
 }
 
 .btn.secondary {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(125, 211, 252, 0.3);
-  margin-top: 12px;
+  margin-top: 16px;
+  box-shadow: none;
+}
+
+.btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(125, 211, 252, 0.5);
+  transform: translateY(-2px);
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* Input pour le nom */
 .name-input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(125, 211, 252, 0.3);
-  border-radius: 8px;
-  padding: 12px;
+  border-radius: 12px;
+  padding: 14px 16px;
   color: #fff;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: 15px;
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.25s;
 }
 
 .name-input:focus {
   border-color: #7dd3fc;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.1);
 }
 
-/* Sélecteur de difficulté */
 .difficulty-selector {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
 }
 
 .difficulty-selector label {
   font-size: 12px;
   color: #94a3b8;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 
 .difficulty-selector input[type="range"] {
   width: 100%;
-  height: 8px;
+  height: 6px;
   -webkit-appearance: none;
   appearance: none;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: linear-gradient(to right, #3b82f6, #6366f1, #8b5cf6);
+  border-radius: 3px;
   outline: none;
   cursor: pointer;
 }
@@ -247,38 +300,30 @@ canvas {
 .difficulty-selector input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, #7dd3fc, #3b82f6);
   border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 0 10px rgba(125, 211, 252, 0.5);
 }
 
 .difficulty-selector input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
-.difficulty-selector input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
+  transform: scale(1.3);
+  box-shadow: 0 0 15px rgba(125, 211, 252, 0.7);
 }
 
 .difficulty-value {
-  font-size: 18px;
-  color: #7dd3fc;
+  font-size: 20px;
+  color: #fbbf24;
   font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
 }
 
-/* Leaderboard */
 #leaderboard {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 20px;
   text-align: center;
 }
 
@@ -286,7 +331,7 @@ canvas {
   font-size: 13px;
   color: #fbbf24;
   letter-spacing: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   text-transform: uppercase;
 }
 
@@ -294,39 +339,43 @@ canvas {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
   font-size: 13px;
-  margin-bottom: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  transition: background 0.2s;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.2s;
+  border: 1px solid transparent;
 }
 
 .lb-row:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(125, 211, 252, 0.2);
+  transform: translateX(4px);
 }
 
 .lb-row.gold {
-  background: rgba(251, 191, 36, 0.15);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.05));
   color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
 }
 
 .lb-row.silver {
   color: #c084fc;
-  border: 1px solid rgba(192, 132, 252, 0.3);
+  border-color: rgba(192, 132, 252, 0.4);
 }
 
 .lb-row.bronze {
   color: #f97316;
-  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-color: rgba(249, 115, 22, 0.4);
 }
 
 .lb-rank {
-  width: 28px;
+  width: 32px;
   text-align: center;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .lb-name {
@@ -339,45 +388,156 @@ canvas {
 .lb-score {
   color: #7dd3fc;
   font-weight: bold;
-  min-width: 70px;
+  min-width: 80px;
   text-align: right;
 }
 
 .lb-wave {
   font-size: 11px;
   color: #64748b;
-  min-width: 60px;
+  min-width: 70px;
   text-align: right;
 }
 
-/* Game Over Panel */
 #gameoverPanel {
   max-width: 500px;
 }
 
 #gameoverPanel .sub {
   color: #ef4444;
-  font-size: 14px;
+  font-size: 15px;
 }
 
-/* Your Score Section */
 .your-score-section {
-  margin-top: 16px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
-  border: 1px dashed rgba(125, 211, 252, 0.2);
+  margin-top: 20px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  border: 1px dashed rgba(125, 211, 252, 0.3);
 }
 
 .your-score-section h4 {
-  font-size: 11px;
+  font-size: 12px;
   color: #94a3b8;
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-/* Responsive */
+.firebase-info {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 12px;
+  font-style: italic;
+}
+
+/* Upgrades display */
+#upgradesHUD {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  z-index: 10;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+}
+
+.upgrade-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.upgrade-icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.1);
+}
+
+.upgrade-icon .icon {
+  font-size: 18px;
+}
+
+.upgrade-icon .name {
+  font-size: 10px;
+  color: #94a3b8;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Charge indicator */
+#chargeIndicator {
+  position: fixed;
+  bottom: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  z-index: 10;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+#chargeIndicator .fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.05s;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+}
+
+/* Controls info */
+#controlsInfo {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 12px;
+  color: #94a3b8;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 12px 16px;
+  border-radius: 12px;
+  z-index: 10;
+  text-align: left;
+  max-width: 220px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(125, 211, 252, 0.2);
+}
+
+#controlsInfo div {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#controlsInfo kbd {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+  color: #7dd3fc;
+  font-size: 11px;
+}
+
+#controlsInfo span.upgrade {
+  color: #10b981;
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
   #startContainer {
     flex-direction: column;
@@ -391,25 +551,53 @@ canvas {
   
   .panel {
     width: 90%;
+    padding: 24px 28px;
+  }
+  
+  #controlsInfo {
+    display: none;
+  }
+  
+  #upgradesHUD {
+    bottom: 16px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  
+  .upgrade-icon {
+    padding: 6px 8px;
+  }
+  
+  .upgrade-icon .name {
+    display: none;
   }
 }
 
-/* Animations */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+/* Pickup notification */
+.powerup-pickup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  color: #10b981;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  animation: pickupFloat 1.2s ease-out forwards;
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
 }
 
-.pulse {
-  animation: pulse 2s infinite;
+@keyframes pickupFloat {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -80px) scale(1.4); }
+  100% { opacity: 0; transform: translate(-50%, -150px) scale(1.8); }
 }
 
-/* Info Firebase */
-.firebase-info {
-  font-size: 10px;
-  color: #64748b;
-  margin-top: 8px;
-  font-style: italic;
+/* Explosion effect */
+@keyframes pulseGlow {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 </style>
 </head>
@@ -421,12 +609,23 @@ canvas {
   <span>VIE <span class="val" id="hLife">♥♥♥</span></span>
 </div>
 
+<div id="upgradesHUD"></div>
+<div id="chargeIndicator"><div class="fill" id="chargeFill"></div></div>
+
+<div id="controlsInfo">
+  <div><kbd>CLIC</kbd> = Tir normal</div>
+  <div><kbd>MAINTENIR</kbd> = Charge</div>
+  <div><kbd>RELÂCHER</kbd> = <span class="upgrade">MEGA TIR</span></div>
+  <div style="margin-top:8px;">Attrapez les <span class="upgrade">💎</span> pour des améliorations !</div>
+</div>
+
+<div class="powerup-pickup" id="pickupNotification"></div>
+
 <canvas id="c"></canvas>
 <div class="wave-flash" id="wflash"></div>
 
 <div id="overlay">
   <div id="startContainer">
-    <!-- Colonne de gauche -->
     <div id="leftColumn">
       <div class="panel" id="startPanel">
         <h1>⚡ Spacecraft Burster</h1>
@@ -446,7 +645,6 @@ canvas {
       </div>
     </div>
     
-    <!-- Colonne de droite -->
     <div id="rightColumn">
       <div class="panel">
         <h1>🏆 TOP 15 SCORES</h1>
@@ -457,12 +655,11 @@ canvas {
     </div>
   </div>
   
-  <!-- GAME OVER -->
   <div class="panel hidden" id="gameoverPanel">
     <h1>GAME OVER</h1>
     <p class="sub">T'as perdu…</p>
     <div class="score-big" id="goScore">0</div>
-    <p style="color:#7dd3fc;font-size:12px;margin-bottom:16px">VAGUE ATTEINTE : <span id="goWave">1</span></p>
+    <p style="color:#7dd3fc;font-size:14px;margin-bottom:20px">VAGUE ATTEINTE : <span id="goWave">1</span></p>
     
     <input class="name-input" id="nameInput" maxlength="12" placeholder="Ton pseudo (12 car. max)" />
     <button class="btn" id="saveBtn" onclick="saveScore()">💾 SAUVEGARDER MON SCORE</button>
@@ -470,12 +667,12 @@ canvas {
     
     <div class="your-score-section" id="yourScoreSection" style="display: none;">
       <h4>TON SCORE</h4>
-      <div style="color: #7dd3fc; font-weight: bold; font-size: 14px;">
+      <div style="color: #7dd3fc; font-weight: bold; font-size: 15px;">
         <span id="yourScoreValue">0</span> pts - Vague <span id="yourWaveValue">1</span>
       </div>
     </div>
     
-    <div id="leaderboard" style="margin-top:20px">
+    <div id="leaderboard" style="margin-top:24px">
       <h3>🏆 MEILLEURS SCORES</h3>
       <div id="lbListGO"></div>
     </div>
@@ -484,10 +681,8 @@ canvas {
 
 <script>
 // ========== CONFIGURATION ==========
-// Remplace ces valeurs par ta config Firebase pour activer le classement en ligne
-const USE_FIREBASE = false; // Mets à true si tu as configuré Firebase
+const USE_FIREBASE = false;
 
-// Configuration Firebase (à remplir)
 const firebaseConfig = {
   apiKey: "VOTRE_API_KEY",
   authDomain: "ton-projet.firebaseapp.com",
@@ -497,7 +692,7 @@ const firebaseConfig = {
   appId: "VOTRE_APP_ID"
 };
 
-// ========== LOCAL STORAGE (backup si Firebase pas configuré) ==========
+// ========== LOCAL STORAGE ==========
 const SCORES_KEY = 'spacecraft-burster_scores';
 
 function loadLocalScores() {
@@ -513,7 +708,6 @@ function saveLocalScore(name, score, wave) {
   try {
     const scores = loadLocalScores();
     scores.push({ name: name.trim().toUpperCase() || 'ANONYME', score, wave, date: Date.now() });
-    // Garder seulement le top 15
     scores.sort((a, b) => b.score - a.score);
     scores.splice(15);
     localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
@@ -538,7 +732,6 @@ function saveScoreToBackend(name, score, wave) {
   return Promise.resolve(saveLocalScore(name, score, wave));
 }
 
-// ========== FIREBASE (optionnel) ==========
 if (USE_FIREBASE) {
   const script = document.createElement('script');
   script.type = 'module';
@@ -546,32 +739,23 @@ if (USE_FIREBASE) {
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit }
       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
     const app = initializeApp(${JSON.stringify(firebaseConfig)});
     const db = getFirestore(app);
-
     window._fbSave = async (name, score, wave) => {
       try {
         await addDoc(collection(db, 'spacecraft-burster_scores'), {
           name: name.trim().toUpperCase() || 'ANONYME',
-          score, wave,
-          date: Date.now()
+          score, wave, date: Date.now()
         });
         return true;
-      } catch(e) { 
-        console.error(e); 
-        return false; 
-      }
+      } catch(e) { return false; }
     };
-
     window._fbLoad = async () => {
       try {
         const q = query(collection(db, 'spacecraft-burster_scores'), orderBy('score','desc'), limit(15));
         const snap = await getDocs(q);
         return snap.docs.map(d => d.data());
-      } catch(e) { 
-        return []; 
-      }
+      } catch(e) { return []; }
     };
   `;
   document.body.appendChild(script);
@@ -586,18 +770,83 @@ function resize() {
   W = canvas.width = window.innerWidth;
   H = canvas.height = window.innerHeight;
 }
-
 resize();
 window.addEventListener('resize', resize);
 
-// Stars background
-const STARS = Array.from({length: 150}, () => ({
-  x: Math.random(), y: Math.random(),
-  s: 0.5 + Math.random()*2, spd: 0.2 + Math.random()*0.8,
-  b: 0.3 + Math.random()*0.7
+// Enhanced stars background
+const STARS = Array.from({length: 200}, () => ({
+  x: Math.random(), 
+  y: Math.random(),
+  s: 0.3 + Math.random() * 2.5,
+  spd: 0.1 + Math.random() * 1.2,
+  b: 0.2 + Math.random() * 0.8,
+  twinkle: Math.random() * Math.PI * 2
 }));
 
-// Game state
+// ========== UPGRADE DEFINITIONS ==========
+const UPGRADE_TYPES = [
+  {
+    type: 'triple',
+    name: 'TRIPLE TIR',
+    icon: '⚡⚡⚡',
+    color: '#3b82f6',
+    description: 'Tire 3 projectiles',
+    apply: (player) => { 
+      if (!player.hasTriple) {
+        player.hasTriple = true;
+        return true;
+      }
+      return false;
+    }
+  },
+  {
+    type: 'speed',
+    name: 'VITESSE',
+    icon: '🚀',
+    color: '#10b981',
+    description: 'Projectiles plus rapides',
+    apply: (player) => { 
+      player.bulletSpeed = Math.min(player.bulletSpeed * 1.5, 25);
+      return true;
+    }
+  },
+  {
+    type: 'damage',
+    name: 'DÉGÂTS',
+    icon: '💥',
+    color: '#ef4444',
+    description: 'Dégâts augmentés',
+    apply: (player) => { 
+      player.damageMultiplier *= 1.5;
+      return true;
+    }
+  },
+  {
+    type: 'size',
+    name: 'TAILLE',
+    icon: '🔵',
+    color: '#f59e0b',
+    description: 'Projectiles plus gros',
+    apply: (player) => { 
+      player.bulletSize = Math.min(player.bulletSize * 1.4, 3);
+      return true;
+    }
+  },
+  {
+    type: 'charged',
+    name: 'TIR CHARGÉ',
+    icon: '⚡⚡⚡⚡',
+    color: '#8b5cf6',
+    description: 'Tir chargé amélioré',
+    apply: (player) => { 
+      player.chargedDamage *= 1.8;
+      player.chargedSize *= 1.4;
+      return true;
+    }
+  }
+];
+
+// ========== GAME STATE ==========
 let score, wave, lives, bullets, enemies, particles, bossAlive;
 let mx = W/2, my = H/2;
 let shootCD = 0, spawnTimer = 0, waveEnemyCount, waveSpawned;
@@ -606,53 +855,138 @@ let flashTimer = 0, flashColor = '#fbbf24', flashText = '';
 let shipFlash = 0;
 let thrusterAnim = 0;
 
+// Player state
+let player = {
+  size: 28,
+  hasTriple: false,
+  bulletSpeed: 14,
+  damageMultiplier: 1,
+  bulletSize: 1,
+  chargedDamage: 4,
+  chargedSize: 2.2,
+  isCharging: false,
+  chargeLevel: 0,
+  maxCharge: 100
+};
+
+// Upgrades collected
+let collectedUpgrades = [];
+// Upgrades on screen
+let upgrades = [];
+
 const SX = () => mx;
-const SY = () => H - 54;
-const SR = 16;
+const SY = () => H - 70;
+const SR = player.size;
 
-// Difficulty settings
-let startWave = 1;
-
-// Enemy types
 const ETYPES = [
-  { name:'Extraterstre',    color:'#ef4444', size:20, hp:3, spd:1.1, pts:30, shape:'robot'   },
-  { name:'Origamin', color:'#a855f7', size:16, hp:2, spd:1.9, pts:20, shape:'diamond' },
-  { name:'Adam',     color:'#f97316', size:14, hp:1, spd:2.5, pts:10, shape:'orb'     },
-  { name:'Carrin',   color:'#ec4899', size:18, hp:2, spd:1.5, pts:25, shape:'square'  },
-  { name:'Ombre',    color:'#6366f1', size:22, hp:4, spd:1.0, pts:40, shape:'shadow'  },
+  { name:'Extraterrestre', color:'#ef4444', size:28, hp:3, spd:1.1, pts:30, shape:'robot'   },
+  { name:'Origamin', color:'#a855f7', size:24, hp:2, spd:1.9, pts:20, shape:'diamond' },
+  { name:'Adam',     color:'#f97316', size:20, hp:1, spd:2.5, pts:10, shape:'orb'     },
+  { name:'Carrin',   color:'#ec4899', size:26, hp:2, spd:1.5, pts:25, shape:'square'  },
+  { name:'Ombre',    color:'#6366f1', size:32, hp:4, spd:1.0, pts:40, shape:'shadow'  },
 ];
-const BOSS_DEF = { name:'SPACECRAFT PRIME', color:'#dc2626', size:38, hp:40, spd:0.65, pts:300, shape:'boss' };
+const BOSS_DEF = { name:'SPACECRAFT PRIME', color:'#dc2626', size:52, hp:60, spd:0.65, pts:400, shape:'boss' };
 
-function enemiesForWave(w) { 
-  return 6 + w * 3; 
+function enemiesForWave(w) { return 6 + w * 3; }
+function isBossWave(w) { return w % 5 === 0; }
+
+// ========== UPGRADE SPAWN ==========
+let upgradeSpawnTimer = 0;
+const UPGRADE_SPAWN_RATE = 240;
+
+function spawnUpgrade(x, y) {
+  const type = UPGRADE_TYPES[Math.floor(Math.random() * UPGRADE_TYPES.length)];
+  upgrades.push({
+    x: x,
+    y: y,
+    size: 18,
+    type: type.type,
+    icon: type.icon,
+    color: type.color,
+    name: type.name
+  });
 }
-function isBossWave(w) { 
-  return w % 5 === 0; 
+
+function collectUpgrade(type) {
+  const upgradeDef = UPGRADE_TYPES.find(u => u.type === type);
+  if (!upgradeDef) return false;
+  
+  const applied = upgradeDef.apply(player);
+  if (applied) {
+    collectedUpgrades.push(type);
+    showPickupNotification(upgradeDef.icon);
+    updateUpgradesHUD();
+    return true;
+  }
+  return false;
+}
+
+function showPickupNotification(icon) {
+  const el = document.getElementById('pickupNotification');
+  el.textContent = icon + ' AMÉLIORATION !';
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = 'pickupFloat 1.2s ease-out forwards';
+}
+
+function updateUpgradesHUD() {
+  const container = document.getElementById('upgradesHUD');
+  const activeUpgrades = UPGRADE_TYPES.filter(u => {
+    switch(u.type) {
+      case 'triple': return player.hasTriple;
+      case 'speed': return player.bulletSpeed > 14;
+      case 'damage': return player.damageMultiplier > 1;
+      case 'size': return player.bulletSize > 1;
+      case 'charged': return player.chargedDamage > 4 || player.chargedSize > 2.2;
+      default: return false;
+    }
+  });
+  
+  container.innerHTML = activeUpgrades.map(u =>
+    `<div class="upgrade-icon">
+      <span class="icon">${u.icon}</span>
+      <span class="name">${u.name}</span>
+    </div>`
+  ).join('');
 }
 
 // ========== GAME FLOW ==========
 function startGame() {
   const difficulty = parseInt(document.getElementById('difficultySlider').value);
-  startWave = Math.max(1, Math.min(50, difficulty));
+  wave = Math.max(1, Math.min(50, difficulty));
   
   score = 0;
-  wave = startWave;
   lives = 3;
   bullets = [];
   enemies = [];
   particles = [];
+  upgrades = [];
   bossAlive = false;
   shootCD = 0;
   spawnTimer = 0;
+  upgradeSpawnTimer = 0;
   waveEnemyCount = enemiesForWave(wave);
   waveSpawned = 0;
   gameRunning = true;
   mx = W/2;
   my = H/2;
   
+  // Reset player
+  player.hasTriple = false;
+  player.bulletSpeed = 14;
+  player.damageMultiplier = 1;
+  player.bulletSize = 1;
+  player.chargedDamage = 4;
+  player.chargedSize = 2.2;
+  player.isCharging = false;
+  player.chargeLevel = 0;
+  collectedUpgrades = [];
+  
   document.getElementById('overlay').classList.add('hidden');
   document.getElementById('startPanel').classList.add('hidden');
   document.getElementById('gameoverPanel').classList.add('hidden');
+  document.getElementById('upgradesHUD').innerHTML = '';
+  document.getElementById('chargeFill').style.width = '0%';
   
   flashWave('VAGUE ' + wave, '#7dd3fc');
   
@@ -673,14 +1007,9 @@ async function saveScore() {
   
   if (success) {
     btn.textContent = '✅ Score sauvegardé !';
-    
-    // Afficher le score de l'utilisateur
-    const yourScoreSection = document.getElementById('yourScoreSection');
     document.getElementById('yourScoreValue').textContent = score.toLocaleString();
     document.getElementById('yourWaveValue').textContent = wave;
-    yourScoreSection.style.display = 'block';
-    
-    // Recharger le leaderboard
+    document.getElementById('yourScoreSection').style.display = 'block';
     loadLB();
   } else {
     btn.textContent = '❌ Erreur de sauvegarde';
@@ -697,15 +1026,12 @@ async function loadLB() {
   ['lbListStart', 'lbListGO'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    
     if (!rows.length) {
       el.innerHTML = '<div style="color:#475569;font-size:12px;text-align:center;padding:12px">Aucun score encore…</div>';
       return;
     }
-    
     const medals = ['🥇', '🥈', '🥉'];
     const cls = ['gold', 'silver', 'bronze'];
-    
     el.innerHTML = rows.slice(0, 15).map((r, i) =>
       `<div class="lb-row ${cls[i] || ''}">
         <span class="lb-rank">${medals[i] || (i + 1)}</span>
@@ -730,10 +1056,11 @@ function gameOver() {
   document.getElementById('startPanel').classList.add('hidden');
   document.getElementById('overlay').classList.remove('hidden');
   document.getElementById('yourScoreSection').style.display = 'none';
+  document.getElementById('upgradesHUD').innerHTML = '';
+  document.getElementById('chargeFill').style.width = '0%';
   loadLB();
 }
 
-// ========== FLASH ==========
 function flashWave(txt, col) {
   flashText = txt;
   flashColor = col;
@@ -744,7 +1071,6 @@ function flashWave(txt, col) {
   flashTimer = 100;
 }
 
-// ========== SPAWN ==========
 function spawnEnemy() {
   const isBoss = isBossWave(wave) && waveEnemyCount === 1 && !bossAlive;
   let def = isBoss ? {...BOSS_DEF} : {...ETYPES[Math.floor(Math.random() * Math.min(ETYPES.length, 1 + Math.floor(wave/2)))]};
@@ -764,43 +1090,70 @@ function spawnEnemy() {
 function burst(x, y, color, n, big) {
   for (let i = 0; i < n; i++) {
     const a = Math.random()*Math.PI*2;
-    const s = (big?3:1.5) + Math.random()*(big?6:3);
-    particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:big?50:30,maxLife:big?50:30,color,r:big?4:2.5});
+    const s = (big?4:2) + Math.random()*(big?8:4);
+    particles.push({
+      x, y,
+      vx: Math.cos(a)*s,
+      vy: Math.sin(a)*s,
+      life: big ? 60 : 40,
+      maxLife: big ? 60 : 40,
+      color,
+      r: big ? 5 : 3,
+      glow: Math.random() > 0.5
+    });
   }
 }
 
-function spark(x,y) {
-  for (let i=0;i<6;i++){
-    const a=Math.random()*Math.PI*2;
-    particles.push({x,y,vx:Math.cos(a)*(1+Math.random()*4),vy:Math.sin(a)*(1+Math.random()*4),life:18,maxLife:18,color:'#7dd3fc',r:2});
+function spark(x, y) {
+  for (let i = 0; i < 8; i++) {
+    const a = Math.random() * Math.PI * 2;
+    particles.push({
+      x, y,
+      vx: Math.cos(a) * (2 + Math.random() * 6),
+      vy: Math.sin(a) * (2 + Math.random() * 6),
+      life: 25,
+      maxLife: 25,
+      color: '#7dd3fc',
+      r: 2.5,
+      glow: true
+    });
   }
 }
 
 // ========== DRAW ==========
 function drawBg() {
-  ctx.fillStyle='#020817';
-  ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = '#020817';
+  ctx.fillRect(0, 0, W, H);
   
-  // Nebula glow
-  const ng = ctx.createRadialGradient(W*0.7,H*0.2,10,W*0.7,H*0.2,200);
-  ng.addColorStop(0,'rgba(99,102,241,0.06)');
-  ng.addColorStop(1,'transparent');
-  ctx.fillStyle=ng;
-  ctx.fillRect(0,0,W,H);
+  // Enhanced nebula effects
+  const ng1 = ctx.createRadialGradient(W*0.7, H*0.2, 20, W*0.7, H*0.2, 250);
+  ng1.addColorStop(0, 'rgba(99, 102, 241, 0.08)');
+  ng1.addColorStop(1, 'transparent');
+  ctx.fillStyle = ng1;
+  ctx.fillRect(0, 0, W, H);
   
-  const ng2 = ctx.createRadialGradient(W*0.2,H*0.6,10,W*0.2,H*0.6,150);
-  ng2.addColorStop(0,'rgba(59,130,246,0.05)');
-  ng2.addColorStop(1,'transparent');
-  ctx.fillStyle=ng2;
-  ctx.fillRect(0,0,W,H);
+  const ng2 = ctx.createRadialGradient(W*0.2, H*0.7, 20, W*0.2, H*0.7, 200);
+  ng2.addColorStop(0, 'rgba(59, 130, 246, 0.06)');
+  ng2.addColorStop(1, 'transparent');
+  ctx.fillStyle = ng2;
+  ctx.fillRect(0, 0, W, H);
   
-  // Stars
+  const ng3 = ctx.createRadialGradient(W*0.8, H*0.8, 20, W*0.8, H*0.8, 180);
+  ng3.addColorStop(0, 'rgba(147, 51, 234, 0.05)');
+  ng3.addColorStop(1, 'transparent');
+  ctx.fillStyle = ng3;
+  ctx.fillRect(0, 0, W, H);
+  
+  // Stars with twinkling
   STARS.forEach(s => {
-    s.y += s.spd * 0.003;
+    s.y += s.spd * 0.004;
     if (s.y > 1) s.y = 0;
-    const alpha = s.b * (0.6+0.4*Math.sin(Date.now()*0.002+s.x*10));
-    ctx.fillStyle=`rgba(200,220,255,${alpha})`;
-    ctx.fillRect(s.x*W, s.y*H, s.s, s.s);
+    const twinkle = Math.sin(Date.now() * 0.003 + s.twinkle) * 0.4 + 0.6;
+    const alpha = s.b * twinkle;
+    ctx.fillStyle = `rgba(220, 230, 255, ${alpha})`;
+    ctx.beginPath();
+    ctx.arc(s.x * W, s.y * H, s.s, 0, Math.PI * 2);
+    ctx.fill();
   });
 }
 
@@ -809,121 +1162,167 @@ function drawShip(x, y) {
   ctx.save();
   ctx.translate(x, y);
 
-  // Thruster flame
-  const flameH = 14 + Math.sin(thrusterAnim*0.4)*4;
-  const fg = ctx.createLinearGradient(0, 8, 0, 8+flameH);
-  fg.addColorStop(0,'rgba(59,130,246,0.9)');
-  fg.addColorStop(0.5,'rgba(251,191,36,0.7)');
-  fg.addColorStop(1,'transparent');
-  ctx.fillStyle=fg;
+  // Enhanced thruster flame with gradient
+  const flameH = 20 + Math.sin(thrusterAnim * 0.4) * 6;
+  const fg = ctx.createLinearGradient(0, 12, 0, 12 + flameH);
+  fg.addColorStop(0, 'rgba(59, 130, 246, 0.9)');
+  fg.addColorStop(0.4, 'rgba(251, 191, 36, 0.8)');
+  fg.addColorStop(0.7, 'rgba(245, 158, 11, 0.6)');
+  fg.addColorStop(1, 'transparent');
+  ctx.fillStyle = fg;
   ctx.beginPath();
-  ctx.moveTo(-7,8);
-  ctx.lineTo(7,8);
-  ctx.lineTo(3,8+flameH);
-  ctx.lineTo(-3,8+flameH);
+  ctx.moveTo(-10, 12);
+  ctx.lineTo(10, 12);
+  ctx.lineTo(5, 12 + flameH);
+  ctx.lineTo(-5, 12 + flameH);
   ctx.closePath();
   ctx.fill();
   
   // Side flames
-  const sf = 8+Math.sin(thrusterAnim*0.5)*3;
-  ctx.fillStyle='rgba(99,102,241,0.6)';
+  const sf = 12 + Math.sin(thrusterAnim * 0.5) * 5;
+  ctx.fillStyle = 'rgba(99, 102, 241, 0.7)';
   ctx.beginPath();
-  ctx.moveTo(-12,4);
-  ctx.lineTo(-8,4);
-  ctx.lineTo(-10,4+sf);
+  ctx.moveTo(-18, 6);
+  ctx.lineTo(-12, 6);
+  ctx.lineTo(-14, 6 + sf);
   ctx.closePath();
   ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(12,4);
-  ctx.lineTo(8,4);
-  ctx.lineTo(10,4+sf);
+  ctx.moveTo(18, 6);
+  ctx.lineTo(12, 6);
+  ctx.lineTo(14, 6 + sf);
   ctx.closePath();
   ctx.fill();
 
   if (shipFlash > 0) {
-    ctx.globalAlpha = 0.5 + Math.sin(shipFlash*0.8)*0.5;
+    ctx.globalAlpha = 0.6 + Math.sin(shipFlash * 0.8) * 0.4;
     shipFlash--;
   }
 
-  // Hull body
-  ctx.fillStyle='#1e3a8a';
+  // Hull body - enhanced design
+  ctx.fillStyle = '#1e293b';
   ctx.beginPath();
-  ctx.moveTo(0,-SR);
-  ctx.lineTo(12,8);
-  ctx.lineTo(8,12);
-  ctx.lineTo(-8,12);
-  ctx.lineTo(-12,8);
+  ctx.moveTo(0, -SR);
+  ctx.lineTo(18, 12);
+  ctx.lineTo(12, 20);
+  ctx.lineTo(-12, 20);
+  ctx.lineTo(-18, 12);
   ctx.closePath();
   ctx.fill();
   
-  // Hull highlight
-  ctx.fillStyle='#2563eb';
+  // Hull gradient highlight
+  const hg = ctx.createLinearGradient(0, -SR, 0, 12);
+  hg.addColorStop(0, '#3b82f6');
+  hg.addColorStop(1, '#1e40af');
+  ctx.fillStyle = hg;
   ctx.beginPath();
-  ctx.moveTo(0,-SR);
-  ctx.lineTo(7,4);
-  ctx.lineTo(0,8);
-  ctx.lineTo(-7,4);
+  ctx.moveTo(0, -SR);
+  ctx.lineTo(10, 6);
+  ctx.lineTo(0, 12);
+  ctx.lineTo(-10, 6);
   ctx.closePath();
   ctx.fill();
   
-  // Cockpit
-  const cg = ctx.createRadialGradient(0,-4,1,0,-4,7);
-  cg.addColorStop(0,'#7dd3fc');
-  cg.addColorStop(1,'#3b82f6');
-  ctx.fillStyle=cg;
+  // Cockpit with glow
+  const cg = ctx.createRadialGradient(0, -6, 2, 0, -6, 11);
+  cg.addColorStop(0, '#7dd3fc');
+  cg.addColorStop(0.5, '#3b82f6');
+  cg.addColorStop(1, '#1e3a8a');
+  ctx.fillStyle = cg;
   ctx.beginPath();
-  ctx.ellipse(0,-4,6,7,0,0,Math.PI*2);
+  ctx.ellipse(0, -6, 10, 11, 0, 0, Math.PI * 2);
   ctx.fill();
   
-  // Wings
-  ctx.fillStyle='#1d4ed8';
+  // Cockpit glass effect
+  ctx.fillStyle = 'rgba(200, 230, 255, 0.2)';
   ctx.beginPath();
-  ctx.moveTo(-12,8);
-  ctx.lineTo(-20,14);
-  ctx.lineTo(-14,14);
-  ctx.lineTo(-8,10);
+  ctx.ellipse(0, -6, 8, 9, 0, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Wings with details
+  ctx.fillStyle = '#1e40af';
+  ctx.beginPath();
+  ctx.moveTo(-18, 12);
+  ctx.lineTo(-28, 22);
+  ctx.lineTo(-20, 22);
+  ctx.lineTo(-14, 16);
   ctx.closePath();
   ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(12,8);
-  ctx.lineTo(20,14);
-  ctx.lineTo(14,14);
-  ctx.lineTo(8,10);
+  ctx.moveTo(18, 12);
+  ctx.lineTo(28, 22);
+  ctx.lineTo(20, 22);
+  ctx.lineTo(14, 16);
   ctx.closePath();
   ctx.fill();
   
-  // Wing accent
-  ctx.fillStyle='#7dd3fc';
+  // Wing accents
+  ctx.fillStyle = '#7dd3fc';
   ctx.beginPath();
-  ctx.moveTo(-18,13);
-  ctx.lineTo(-14,13);
-  ctx.lineTo(-13,14);
-  ctx.lineTo(-19,14);
+  ctx.moveTo(-25, 21);
+  ctx.lineTo(-21, 21);
+  ctx.lineTo(-20, 22);
+  ctx.lineTo(-26, 22);
   ctx.closePath();
   ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(18,13);
-  ctx.lineTo(14,13);
-  ctx.lineTo(13,14);
-  ctx.lineTo(19,14);
+  ctx.moveTo(25, 21);
+  ctx.lineTo(21, 21);
+  ctx.lineTo(20, 22);
+  ctx.lineTo(26, 22);
   ctx.closePath();
   ctx.fill();
   
   // Cannon
-  ctx.fillStyle='#93c5fd';
-  ctx.fillRect(-2,-SR-4,4,8);
+  ctx.fillStyle = '#93c5fd';
+  ctx.fillRect(-4, -SR - 8, 8, 12);
   ctx.beginPath();
-  ctx.arc(0,-SR-4,3,0,Math.PI*2);
+  ctx.arc(0, -SR - 8, 5, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Cannon tip glow
+  ctx.fillStyle = '#7dd3fc';
+  ctx.beginPath();
+  ctx.arc(0, -SR - 10, 3, 0, Math.PI * 2);
   ctx.fill();
 
-  // Aim dot trail
-  ctx.globalAlpha=1;
-  const dx=mx-x, dy=my-y, dist=Math.sqrt(dx*dx+dy*dy)||1;
-  for(let i=1;i<=4;i++){
-    ctx.fillStyle=`rgba(125,211,252,${0.15-i*0.03})`;
+  // Aim dot trail - enhanced
+  ctx.globalAlpha = 1;
+  const dx = mx - x, dy = my - y, dist = Math.sqrt(dx * dx + dy * dy) || 1;
+  for (let i = 1; i <= 5; i++) {
+    const alpha = 0.2 - i * 0.03;
+    ctx.fillStyle = `rgba(125, 211, 252, ${alpha})`;
     ctx.beginPath();
-    ctx.arc(x+dx/dist*(i*14), y+dy/dist*(i*14), 3-i*0.4, 0, Math.PI*2);
+    ctx.arc(
+      x + dx / dist * (i * 16),
+      y + dy / dist * (i * 16),
+      4 - i * 0.5,
+      0, Math.PI * 2
+    );
     ctx.fill();
+  }
+
+  // Glow effect when charging
+  if (player.isCharging) {
+    const chargeRatio = player.chargeLevel / player.maxCharge;
+    ctx.fillStyle = `rgba(245, 158, 11, ${chargeRatio * 0.3})`;
+    ctx.beginPath();
+    ctx.arc(0, -SR - 8, 8 + chargeRatio * 10, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Active upgrades indicators
+  if (player.hasTriple) {
+    ctx.fillStyle = '#3b82f6';
+    ctx.font = '12px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚡⚡⚡', 0, -SR - 20);
+  }
+  if (player.damageMultiplier > 1) {
+    ctx.fillStyle = '#ef4444';
+    ctx.font = '12px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText('💥' + Math.round(player.damageMultiplier) + 'x', 0, -SR - 32);
   }
 
   ctx.restore();
@@ -931,17 +1330,69 @@ function drawShip(x, y) {
 
 function drawBullet(b) {
   ctx.save();
-  ctx.shadowColor='#7dd3fc';
-  ctx.shadowBlur=12;
-  const g = ctx.createLinearGradient(b.x,b.y-8,b.x,b.y+2);
-  g.addColorStop(0,'#fff');
-  g.addColorStop(0.3,'#7dd3fc');
-  g.addColorStop(1,'transparent');
-  ctx.fillStyle=g;
-  ctx.beginPath();
-  ctx.ellipse(b.x,b.y,3,8,0,0,Math.PI*2);
-  ctx.fill();
-  ctx.shadowBlur=0;
+  
+  const actualSize = b.charged 
+    ? player.chargedSize * player.bulletSize * 3 
+    : 4 * player.bulletSize;
+  
+  if (b.charged) {
+    // Charged bullet - enhanced visual
+    ctx.shadowColor = '#fbbf24';
+    ctx.shadowBlur = 25;
+    
+    // Outer glow
+    const g1 = ctx.createRadialGradient(b.x, b.y, 2, b.x, b.y, actualSize * 1.5);
+    g1.addColorStop(0, 'rgba(251, 191, 36, 0.8)');
+    g1.addColorStop(0.5, 'rgba(245, 158, 11, 0.4)');
+    g1.addColorStop(1, 'transparent');
+    ctx.fillStyle = g1;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, actualSize * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Main bullet
+    const g2 = ctx.createRadialGradient(b.x, b.y, 2, b.x, b.y, actualSize);
+    g2.addColorStop(0, '#fef08a');
+    g2.addColorStop(0.4, '#fbbf24');
+    g2.addColorStop(0.8, '#f59e0b');
+    g2.addColorStop(1, '#d97706');
+    ctx.fillStyle = g2;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, actualSize, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Center core
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, actualSize * 0.4, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.shadowBlur = 15;
+  } else {
+    // Normal bullet - enhanced
+    ctx.shadowColor = '#7dd3fc';
+    ctx.shadowBlur = 15;
+    
+    const g = ctx.createLinearGradient(b.x, b.y - 6, b.x, b.y + 6);
+    g.addColorStop(0, '#ffffff');
+    g.addColorStop(0.3, '#7dd3fc');
+    g.addColorStop(0.6, '#3b82f6');
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    
+    ctx.beginPath();
+    ctx.ellipse(b.x, b.y, 4 * player.bulletSize, 10 * player.bulletSize, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Bullet tip
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(b.x, b.y - 6 * player.bulletSize, 2 * player.bulletSize, 4 * player.bulletSize, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.shadowBlur = 10;
+  }
+  
   ctx.restore();
 }
 
@@ -949,180 +1400,278 @@ function drawEnemy(e) {
   ctx.save();
   ctx.translate(e.x, e.y);
   e.wobble += 0.04;
-  const bobY = Math.sin(e.wobble)*2;
+  const bobY = Math.sin(e.wobble) * 3;
   ctx.translate(0, bobY);
 
-  if (e.shape==='boss') {
-    // Outer ring
-    ctx.strokeStyle='rgba(239,68,68,0.4)';
-    ctx.lineWidth=3;
+  if (e.shape === 'boss') {
+    // Enhanced boss design
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.arc(0,0,e.size+10,0,Math.PI*2);
-    ctx.stroke();
-    ctx.strokeStyle='rgba(239,68,68,0.15)';
-    ctx.lineWidth=8;
-    ctx.beginPath();
-    ctx.arc(0,0,e.size+18,0,Math.PI*2);
+    ctx.arc(0, 0, e.size + 14, 0, Math.PI * 2);
     ctx.stroke();
     
-    // Spikes
-    for(let i=0;i<8;i++){
-      const a=(i/8)*Math.PI*2+e.angle;
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.2)';
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.arc(0, 0, e.size + 28, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    // Spikes with gradient
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * Math.PI * 2 + e.angle;
       ctx.save();
       ctx.rotate(a);
-      const sg=ctx.createLinearGradient(e.size,0,e.size+18,0);
-      sg.addColorStop(0,'#ef4444');
-      sg.addColorStop(1,'transparent');
-      ctx.fillStyle=sg;
+      const sg = ctx.createLinearGradient(e.size, 0, e.size + 28, 0);
+      sg.addColorStop(0, '#ef4444');
+      sg.addColorStop(0.5, '#dc2626');
+      sg.addColorStop(1, 'transparent');
+      ctx.fillStyle = sg;
       ctx.beginPath();
-      ctx.moveTo(e.size,0);
-      ctx.lineTo(e.size+18,-6);
-      ctx.lineTo(e.size+18,6);
+      ctx.moveTo(e.size, 0);
+      ctx.lineTo(e.size + 28, -10);
+      ctx.lineTo(e.size + 28, 10);
       ctx.closePath();
       ctx.fill();
       ctx.restore();
     }
-    e.angle+=0.025;
-    const bg=ctx.createRadialGradient(0,0,2,0,0,e.size);
-    bg.addColorStop(0,'#7f1d1d');
-    bg.addColorStop(1,'#dc2626');
-    ctx.fillStyle=bg;
+    e.angle += 0.02;
+    
+    // Main body
+    const bg = ctx.createRadialGradient(0, 0, 5, 0, 0, e.size);
+    bg.addColorStop(0, '#7f1d1d');
+    bg.addColorStop(0.5, '#dc2626');
+    bg.addColorStop(1, '#991b1b');
+    ctx.fillStyle = bg;
     ctx.beginPath();
-    ctx.arc(0,0,e.size,0,Math.PI*2);
+    ctx.arc(0, 0, e.size, 0, Math.PI * 2);
     ctx.fill();
     
     // Eyes
-    ctx.fillStyle='#fef2f2';
-    [-10,10].forEach(ex=>{ctx.beginPath();ctx.ellipse(ex,-6,7,8,0,0,Math.PI*2);ctx.fill();});
-    ctx.fillStyle='#1c1917';
-    [-10,10].forEach(ex=>{ctx.beginPath();ctx.arc(ex,-5,4,0,Math.PI*2);ctx.fill();});
-    ctx.fillStyle='#fff';
-    [-8,12].forEach(ex=>{ctx.beginPath();ctx.arc(ex,-7,1.5,0,Math.PI*2);ctx.fill();});
+    ctx.fillStyle = '#fef2f2';
+    [-14, 14].forEach(ex => {
+      ctx.beginPath();
+      ctx.ellipse(ex, -8, 9, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.fillStyle = '#1c1917';
+    [-14, 14].forEach(ex => {
+      ctx.beginPath();
+      ctx.arc(ex, -6, 6, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.fillStyle = '#ffffff';
+    [-12, 16].forEach(ex => {
+      ctx.beginPath();
+      ctx.arc(ex, -8, 2, 0, Math.PI * 2);
+      ctx.fill();
+    });
     
-    // Angry brow
-    ctx.strokeStyle='#7f1d1d';
-    ctx.lineWidth=3;
-    ctx.lineCap='round';
+    // Eyebrows
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(-17,-14);
-    ctx.lineTo(-4,-10);
+    ctx.moveTo(-22, -18);
+    ctx.lineTo(-8, -13);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(17,-14);
-    ctx.lineTo(4,-10);
+    ctx.moveTo(22, -18);
+    ctx.lineTo(8, -13);
     ctx.stroke();
     
     // Mouth
-    ctx.strokeStyle='#7f1d1d';
-    ctx.lineWidth=2;
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(-8,8);
-    ctx.lineTo(-4,12);
-    ctx.lineTo(4,12);
-    ctx.lineTo(8,8);
+    ctx.moveTo(-12, 12);
+    ctx.lineTo(-6, 18);
+    ctx.lineTo(6, 18);
+    ctx.lineTo(12, 12);
     ctx.stroke();
     
-    // HP bar
-    const bw=e.size*2.8;
-    ctx.fillStyle='rgba(0,0,0,0.5)';
-    ctx.fillRect(-bw/2,e.size+8,bw,7);
-    ctx.fillStyle='#ef4444';
-    ctx.fillRect(-bw/2,e.size+8,bw*(e.hp/e.maxHp),7);
-    ctx.strokeStyle='rgba(255,255,255,0.2)';
-    ctx.lineWidth=1;
-    ctx.strokeRect(-bw/2,e.size+8,bw,7);
-  } else if(e.shape==='robot'){
-    ctx.fillStyle=e.color;
-    ctx.fillRect(-e.size,-e.size,e.size*2,e.size*2);
-    ctx.fillStyle='rgba(0,0,0,0.3)';
-    ctx.fillRect(-e.size+3,-e.size+3,e.size*2-6,e.size*2-6);
-    ctx.fillStyle='#fef2f2';
-    ctx.fillRect(-8,-8,6,8);
-    ctx.fillRect(2,-8,6,8);
-    ctx.fillStyle='#1c1917';
-    ctx.fillRect(-7,-7,4,6);
-    ctx.fillRect(3,-7,4,6);
-    ctx.fillStyle='rgba(239,68,68,0.8)';
-    ctx.fillRect(-5,2,10,4);
-    ctx.fillStyle='#999';
-    ctx.fillRect(-3,e.size-5,6,4);
-  } else if(e.shape==='diamond'){
-    const dg=ctx.createLinearGradient(0,-e.size,0,e.size);
-    dg.addColorStop(0,'#f3e8ff');
-    dg.addColorStop(0.5,e.color);
-    dg.addColorStop(1,'#581c87');
-    ctx.fillStyle=dg;
+    // HP bar - enhanced
+    const bw = e.size * 3;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fillRect(-bw / 2, e.size + 12, bw, 10);
+    
+    const hpRatio = e.hp / e.maxHp;
+    const hpColor = hpRatio > 0.5 ? '#10b981' : hpRatio > 0.25 ? '#f59e0b' : '#ef4444';
+    ctx.fillStyle = hpColor;
+    ctx.fillRect(-bw / 2, e.size + 12, bw * hpRatio, 10);
+    
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(-bw / 2, e.size + 12, bw, 10);
+  } else if (e.shape === 'robot') {
+    // Enhanced robot
+    ctx.fillStyle = e.color;
     ctx.beginPath();
-    ctx.moveTo(0,-e.size);
-    ctx.lineTo(e.size,0);
-    ctx.lineTo(0,e.size);
-    ctx.lineTo(-e.size,0);
+    ctx.roundRect(-e.size, -e.size, e.size * 2, e.size * 2, 4);
+    ctx.fill();
+    
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(-e.size + 5, -e.size + 5, e.size * 2 - 10, e.size * 2 - 10);
+    
+    // Eyes
+    ctx.fillStyle = '#fef2f2';
+    ctx.beginPath();
+    ctx.roundRect(-12, -10, 8, 10, 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(4, -10, 8, 10, 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(-11, -9, 6, 8);
+    ctx.fillRect(5, -9, 6, 8);
+    
+    // Mouth
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+    ctx.fillRect(-7, 2, 14, 5);
+    
+    // Details
+    ctx.fillStyle = '#999';
+    ctx.fillRect(-5, e.size - 8, 10, 5);
+  } else if (e.shape === 'diamond') {
+    const dg = ctx.createLinearGradient(0, -e.size, 0, e.size);
+    dg.addColorStop(0, '#f3e8ff');
+    dg.addColorStop(0.5, e.color);
+    dg.addColorStop(1, '#581c87');
+    ctx.fillStyle = dg;
+    ctx.beginPath();
+    ctx.moveTo(0, -e.size);
+    ctx.lineTo(e.size, 0);
+    ctx.lineTo(0, e.size);
+    ctx.lineTo(-e.size, 0);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.35)';
+    
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.beginPath();
-    ctx.moveTo(0,-e.size*0.6);
-    ctx.lineTo(e.size*0.5,0);
-    ctx.lineTo(0,-e.size*0.1);
+    ctx.moveTo(0, -e.size * 0.6);
+    ctx.lineTo(e.size * 0.5, 0);
+    ctx.lineTo(0, -e.size * 0.1);
     ctx.closePath();
     ctx.fill();
-  } else if(e.shape==='square'){
-    ctx.fillStyle=e.color;
+  } else if (e.shape === 'square') {
+    ctx.fillStyle = e.color;
     ctx.beginPath();
-    ctx.roundRect(-e.size,-e.size,e.size*2,e.size*2,4);
+    ctx.roundRect(-e.size, -e.size, e.size * 2, e.size * 2, 6);
     ctx.fill();
-    ctx.fillStyle='rgba(0,0,0,0.3)';
-    ctx.fillRect(-e.size+4,-e.size+4,e.size-4,e.size-4);
-    ctx.strokeStyle='rgba(255,255,255,0.2)';
-    ctx.lineWidth=1;
+    
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(-e.size + 6, -e.size + 6, e.size - 6, e.size - 6);
+    
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(-e.size,-e.size,e.size*2,e.size*2,4);
+    ctx.roundRect(-e.size, -e.size, e.size * 2, e.size * 2, 6);
     ctx.stroke();
-  } else if(e.shape==='shadow'){
-    ctx.shadowColor=e.color;
-    ctx.shadowBlur=20;
-    ctx.fillStyle=e.color;
+  } else if (e.shape === 'shadow') {
+    ctx.shadowColor = e.color;
+    ctx.shadowBlur = 30;
+    ctx.fillStyle = e.color;
     ctx.beginPath();
-    ctx.arc(0,0,e.size,0,Math.PI*2);
+    ctx.arc(0, 0, e.size, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle='rgba(0,0,0,0.6)';
+    
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.beginPath();
-    ctx.arc(0,0,e.size*0.7,0,Math.PI*2);
+    ctx.arc(0, 0, e.size * 0.75, 0, Math.PI * 2);
     ctx.fill();
-    ctx.shadowBlur=0;
-    ctx.fillStyle='rgba(99,102,241,0.8)';
-    [-8,8].forEach(ex=>{ctx.beginPath();ctx.arc(ex,-4,4,0,Math.PI*2);ctx.fill();});
+    
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(99, 102, 241, 0.9)';
+    [-12, 12].forEach(ex => {
+      ctx.beginPath();
+      ctx.arc(ex, -6, 6, 0, Math.PI * 2);
+      ctx.fill();
+    });
   } else {
-    const og=ctx.createRadialGradient(0,0,1,0,0,e.size);
-    og.addColorStop(0,'#fff7ed');
-    og.addColorStop(1,e.color);
-    ctx.fillStyle=og;
+    const og = ctx.createRadialGradient(0, 0, 2, 0, 0, e.size);
+    og.addColorStop(0, '#fff7ed');
+    og.addColorStop(1, e.color);
+    ctx.fillStyle = og;
     ctx.beginPath();
-    ctx.arc(0,0,e.size,0,Math.PI*2);
+    ctx.arc(0, 0, e.size, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle='rgba(255,255,255,0.3)';
+    
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.beginPath();
-    ctx.arc(-e.size*0.3,-e.size*0.3,e.size*0.4,0,Math.PI*2);
+    ctx.arc(-e.size * 0.3, -e.size * 0.3, e.size * 0.5, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.restore();
 }
 
 function drawParticle(p) {
-  ctx.globalAlpha = p.life/p.maxLife;
-  ctx.shadowColor=p.color;
-  ctx.shadowBlur=6;
-  ctx.fillStyle=p.color;
+  ctx.globalAlpha = p.life / p.maxLife;
+  
+  if (p.glow) {
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 10 * (p.life / p.maxLife);
+  }
+  
+  ctx.fillStyle = p.color;
   ctx.beginPath();
-  ctx.arc(p.x,p.y,p.r*(p.life/p.maxLife),0,Math.PI*2);
+  ctx.arc(p.x, p.y, p.r * (p.life / p.maxLife), 0, Math.PI * 2);
   ctx.fill();
-  ctx.globalAlpha=1;
-  ctx.shadowBlur=0;
+  
+  ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
+}
+
+function drawUpgrade(u) {
+  ctx.save();
+  ctx.translate(u.x, u.y);
+  
+  const pulse = Math.sin(Date.now() * 0.02 + u.x * 0.01) * 0.3 + 0.7;
+  const scale = 1 + Math.sin(Date.now() * 0.01) * 0.1;
+  
+  // Glow
+  ctx.shadowColor = u.color;
+  ctx.shadowBlur = 25 * pulse;
+  
+  // Outer glow
+  ctx.fillStyle = u.color + '30';
+  ctx.beginPath();
+  ctx.arc(0, 0, u.size * 1.8 * scale, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Main background
+  ctx.fillStyle = u.color + '15';
+  ctx.beginPath();
+  ctx.arc(0, 0, u.size * 1.3 * scale, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Icon background
+  ctx.fillStyle = u.color + '25';
+  ctx.beginPath();
+  ctx.arc(0, 0, u.size * scale, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Icon
+  ctx.fillStyle = u.color;
+  ctx.font = (u.size * 0.9 * scale) + 'px Courier New';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(u.icon, 0, 0);
+  
+  // Inner glow
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  ctx.beginPath();
+  ctx.arc(0, 0, u.size * 0.5 * scale, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.shadowBlur = 0;
+  ctx.restore();
 }
 
 function draw() {
   drawBg();
   particles.forEach(drawParticle);
+  upgrades.forEach(drawUpgrade);
   bullets.forEach(drawBullet);
   enemies.forEach(drawEnemy);
   drawShip(SX(), SY());
@@ -1130,133 +1679,288 @@ function draw() {
 
 // ========== UPDATE ==========
 function update() {
-  const sx=SX(), sy=SY();
+  const sx = SX(), sy = SY();
 
-  // Auto-shoot
-  if(--shootCD<=0){ 
-    shoot(); 
-    shootCD=14; 
+  // Handle mouse events for charging
+  if (isMouseDown) {
+    player.isCharging = true;
+    player.chargeLevel = Math.min(player.chargeLevel + 3, player.maxCharge);
+    document.getElementById('chargeFill').style.width = (player.chargeLevel / player.maxCharge * 100) + '%';
+  } else if (player.isCharging) {
+    player.isCharging = false;
+    if (player.chargeLevel >= player.maxCharge * 0.2) {
+      fireChargedShot();
+    }
+    player.chargeLevel = 0;
+    document.getElementById('chargeFill').style.width = '0%';
   }
 
-  // Spawn
-  const rate=Math.max(25,85-wave*5);
-  if(++spawnTimer>=rate && waveSpawned<waveEnemyCount){ 
-    spawnEnemy(); 
-    spawnTimer=0; 
+  // Auto-shoot for normal fire
+  if (!player.isCharging && --shootCD <= 0) {
+    shoot();
+    shootCD = 6;
+  }
+
+  // Spawn enemies
+  const rate = Math.max(20, 80 - wave * 4);
+  if (++spawnTimer >= rate && waveSpawned < waveEnemyCount) {
+    spawnEnemy();
+    spawnTimer = 0;
+  }
+
+  // Spawn upgrades
+  if (++upgradeSpawnTimer >= UPGRADE_SPAWN_RATE && Math.random() < 0.25) {
+    const spawnX = 30 + Math.random() * (W - 60);
+    spawnUpgrade(spawnX, -30);
+    upgradeSpawnTimer = 0;
   }
 
   // Bullets
-  bullets=bullets.filter(b=>{ 
-    b.x+=b.vx; 
-    b.y+=b.vy; 
-    return b.y>-10&&b.y<H+10&&b.x>0&&b.x<W; 
+  bullets = bullets.filter(b => {
+    b.x += b.vx;
+    b.y += b.vy;
+    return b.y > -20 && b.y < H + 20 && b.x > -20 && b.x < W + 20;
   });
 
   // Enemies
-  let allDone=waveSpawned>=waveEnemyCount;
-  enemies=enemies.filter(e=>{
-    const dx=sx-e.x, dy=sy-e.y, d=Math.sqrt(dx*dx+dy*dy)||1;
-    e.x+=dx/d*e.spd;
-    e.y+=dy/d*e.spd;
+  let allDone = waveSpawned >= waveEnemyCount;
+  enemies = enemies.filter(e => {
+    const dx = sx - e.x, dy = sy - e.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+    e.x += dx / d * e.spd;
+    e.y += dy / d * e.spd;
 
     // Hit ship
-    if(d<SR+e.size-4){
-      burst(e.x,e.y,e.color,14,true);
+    if (d < SR + e.size - 4) {
+      burst(e.x, e.y, e.color, 20, true);
       lives--;
-      shipFlash=30;
+      shipFlash = 40;
       updateHUD();
-      if(lives<=0){ 
-        gameOver(); 
-        return false; 
+      if (lives <= 0) {
+        gameOver();
+        return false;
       }
       return false;
     }
 
     // Bullet collision
-    bullets=bullets.filter(b=>{
-      const bdx=b.x-e.x,bdy=b.y-e.y;
-      if(Math.sqrt(bdx*bdx+bdy*bdy)<e.size+5){
-        e.hp--;
-        spark(b.x,b.y);
+    bullets = bullets.filter(b => {
+      const bdx = b.x - e.x, bdy = b.y - e.y;
+      const bulletSize = b.charged 
+        ? player.chargedSize * player.bulletSize * 6 
+        : 8 * player.bulletSize;
+      if (Math.sqrt(bdx * bdx + bdy * bdy) < e.size + bulletSize / 2) {
+        const damage = b.charged 
+          ? player.chargedDamage * player.damageMultiplier 
+          : 1 * player.damageMultiplier;
+        e.hp -= damage;
+        spark(b.x, b.y);
         return false;
       }
       return true;
     });
 
-    if(e.hp<=0){
-      burst(e.x,e.y,e.color,20,true);
-      score+=e.pts*wave;
+    if (e.hp <= 0) {
+      burst(e.x, e.y, e.color, 25, true);
+      score += e.pts * wave;
       updateHUD();
-      if(e.shape==='boss') bossAlive=false;
+      if (e.shape !== 'boss') {
+        if (Math.random() < 0.2) {
+          spawnUpgrade(e.x, e.y);
+        }
+      }
+      if (e.shape === 'boss') bossAlive = false;
       return false;
     }
-    if(e.shape!=='boss') allDone=false;
+    if (e.shape !== 'boss') allDone = false;
     return true;
   });
 
-  if(enemies.length===0&&!bossAlive&&waveSpawned>=waveEnemyCount){
-    wave++;
-    waveEnemyCount=isBossWave(wave)?1:enemiesForWave(wave);
-    waveSpawned=0;
-    spawnTimer=0;
-    updateHUD();
-    flashWave(isBossWave(wave)?'⚠ BOSS WAVE '+wave:'— VAGUE '+wave+' —', isBossWave(wave)?'#ef4444':'#7dd3fc');
-  }
-
-  particles=particles.filter(p=>{ 
-    p.x+=p.vx; 
-    p.y+=p.vy; 
-    p.vx*=0.9; 
-    p.vy*=0.9; 
-    p.life--; 
-    return p.life>0; 
+  // Upgrades
+  upgrades = upgrades.filter(u => {
+    u.y += 2;
+    
+    const dx = sx - u.x, dy = sy - u.y, d = Math.sqrt(dx * dx + dy * dy);
+    if (d < SR + u.size) {
+      collectUpgrade(u.type);
+      return false;
+    }
+    
+    return u.y < H;
   });
 
-  if(flashTimer>0){
+  // Wave progression
+  if (enemies.length === 0 && !bossAlive && waveSpawned >= waveEnemyCount) {
+    wave++;
+    waveEnemyCount = isBossWave(wave) ? 1 : enemiesForWave(wave);
+    waveSpawned = 0;
+    spawnTimer = 0;
+    updateHUD();
+    flashWave(isBossWave(wave) ? '⚠ BOSS WAVE ' + wave : '— VAGUE ' + wave + ' —', isBossWave(wave) ? '#ef4444' : '#7dd3fc');
+  }
+
+  particles = particles.filter(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vx *= 0.92;
+    p.vy *= 0.92;
+    p.life--;
+    return p.life > 0;
+  });
+
+  if (flashTimer > 0) {
     flashTimer--;
-    if(flashTimer<=30) document.getElementById('wflash').style.opacity=flashTimer/30;
+    if (flashTimer <= 30) document.getElementById('wflash').style.opacity = flashTimer / 30;
   }
 }
 
 function shoot() {
-  const sx=SX(), sy=SY();
-  const dx=mx-sx, dy=my-sy, d=Math.sqrt(dx*dx+dy*dy)||1;
-  const spd=12;
-  bullets.push({x:sx,y:sy-SR,vx:dx/d*spd,vy:dy/d*spd});
+  const sx = SX(), sy = SY();
+  const dx = mx - sx, dy = my - sy, d = Math.sqrt(dx * dx + dy * dy) || 1;
+  const spd = player.bulletSpeed;
+  
+  if (player.hasTriple) {
+    const angle = Math.atan2(dy, dx);
+    
+    // Main bullet
+    bullets.push({ x: sx, y: sy - SR, vx: dx / d * spd, vy: dy / d * spd, charged: false });
+    
+    // 45° bullet
+    const angle1 = angle + Math.PI / 4;
+    bullets.push({ 
+      x: sx, y: sy - SR, 
+      vx: Math.cos(angle1) * spd, 
+      vy: Math.sin(angle1) * spd,
+      charged: false 
+    });
+    
+    // -45° bullet
+    const angle2 = angle - Math.PI / 4;
+    bullets.push({ 
+      x: sx, y: sy - SR, 
+      vx: Math.cos(angle2) * spd, 
+      vy: Math.sin(angle2) * spd,
+      charged: false 
+    });
+  } else {
+    bullets.push({ x: sx, y: sy - SR, vx: dx / d * spd, vy: dy / d * spd, charged: false });
+  }
+}
+
+function fireChargedShot() {
+  const sx = SX(), sy = SY();
+  const dx = mx - sx, dy = my - sy, d = Math.sqrt(dx * dx + dy * dy) || 1;
+  const spd = player.bulletSpeed * 0.7;
+  
+  if (player.hasTriple) {
+    const angle = Math.atan2(dy, dx);
+    
+    // Main charged bullet
+    bullets.push({ 
+      x: sx, y: sy - SR, 
+      vx: dx / d * spd, vy: dy / d * spd,
+      charged: true 
+    });
+    
+    // 45° charged bullet
+    const angle1 = angle + Math.PI / 6;
+    bullets.push({ 
+      x: sx, y: sy - SR, 
+      vx: Math.cos(angle1) * spd, 
+      vy: Math.sin(angle1) * spd,
+      charged: true 
+    });
+    
+    // -45° charged bullet
+    const angle2 = angle - Math.PI / 6;
+    bullets.push({ 
+      x: sx, y: sy - SR, 
+      vx: Math.cos(angle2) * spd, 
+      vy: Math.sin(angle2) * spd,
+      charged: true 
+    });
+  } else {
+    bullets.push({ 
+      x: sx, y: sy - SR, 
+      vx: dx / d * spd, vy: dy / d * spd,
+      charged: true 
+    });
+  }
+  
+  player.chargeLevel = 0;
+  document.getElementById('chargeFill').style.width = '0%';
 }
 
 function updateHUD() {
-  document.getElementById('hScore').textContent=score.toLocaleString();
-  document.getElementById('hWave').textContent=wave;
-  document.getElementById('hLife').textContent='♥'.repeat(Math.max(0,lives));
+  document.getElementById('hScore').textContent = score.toLocaleString();
+  document.getElementById('hWave').textContent = wave;
+  document.getElementById('hLife').textContent = '♥'.repeat(Math.max(0, lives));
 }
 
 function loop() {
-  if(!gameRunning) return;
+  if (!gameRunning) return;
   update();
   draw();
-  animId=requestAnimationFrame(loop);
+  animId = requestAnimationFrame(loop);
 }
 
 // ========== CONTROLS ==========
-canvas.addEventListener('mousemove',e=>{ 
-  const r=canvas.getBoundingClientRect(); 
-  mx=e.clientX-r.left; 
-  my=e.clientY-r.top; 
+let isMouseDown = false;
+
+canvas.addEventListener('mousedown', (e) => {
+  isMouseDown = true;
+  const r = canvas.getBoundingClientRect();
+  mx = e.clientX - r.left;
+  my = e.clientY - r.top;
+  e.preventDefault();
 });
 
-canvas.addEventListener('touchmove',e=>{ 
-  e.preventDefault(); 
-  const r=canvas.getBoundingClientRect(); 
-  mx=e.touches[0].clientX-r.left; 
-  my=e.touches[0].clientY-r.top; 
-},{passive:false});
-
-canvas.addEventListener('touchstart',e=>{ 
-  const r=canvas.getBoundingClientRect(); 
-  mx=e.touches[0].clientX-r.left; 
-  my=e.touches[0].clientY-r.top; 
+canvas.addEventListener('mouseup', (e) => {
+  isMouseDown = false;
+  const r = canvas.getBoundingClientRect();
+  mx = e.clientX - r.left;
+  my = e.clientY - r.top;
+  e.preventDefault();
 });
+
+canvas.addEventListener('mousemove', (e) => {
+  const r = canvas.getBoundingClientRect();
+  mx = e.clientX - r.left;
+  my = e.clientY - r.top;
+});
+
+canvas.addEventListener('mouseleave', () => {
+  isMouseDown = false;
+  if (player.isCharging) {
+    player.isCharging = false;
+    player.chargeLevel = 0;
+    document.getElementById('chargeFill').style.width = '0%';
+  }
+});
+
+canvas.addEventListener('touchstart', (e) => {
+  isMouseDown = true;
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  mx = e.touches[0].clientX - r.left;
+  my = e.touches[0].clientY - r.top;
+}, { passive: false });
+
+canvas.addEventListener('touchend', (e) => {
+  isMouseDown = false;
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  if (e.changedTouches[0]) {
+    mx = e.changedTouches[0].clientX - r.left;
+    my = e.changedTouches[0].clientY - r.top;
+  }
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  mx = e.touches[0].clientX - r.left;
+  my = e.touches[0].clientY - r.top;
+}, { passive: false });
 
 // ========== DIFFICULTY SLIDER ==========
 const slider = document.getElementById('difficultySlider');
@@ -1267,10 +1971,9 @@ slider.addEventListener('input', function() {
   sliderValue.textContent = 'Vague ' + value;
 });
 
-// Initialiser le slider
 sliderValue.textContent = 'Vague ' + slider.value;
 
-// Charger le leaderboard au démarrage
+// Load leaderboard
 loadLB();
 </script>
 </body>
