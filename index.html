@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cygor's Attack</title>
+<title>Spacecraft Burster</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#020817;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Courier New',monospace;overflow:hidden;user-select:none}
@@ -48,15 +48,15 @@ canvas{display:block;cursor:crosshair}
 <div id="overlay">
   <!-- START -->
   <div class="panel" id="startPanel">
-    <h1>⚡ CYGOR'S ATTACK</h1>
-    <p class="sub">Pilote ton vaisseau et défends la galaxie contre les hordes de Cygor.<br>Boss toutes les 5 vagues !</p>
+    <h1>⚡ Spacecraft Burster</h1>
+    <p class="sub">Pilote ton vaisseau et défends la galaxie contre les hordes des extraterstres.<br>Boss toutes les 5 vagues !</p>
     <button class="btn" onclick="startGame()">▶ JOUER</button>
     <div id="leaderboard"><h3>🏆 MEILLEURS SCORES</h3><div id="lbListStart"></div></div>
   </div>
   <!-- GAME OVER -->
   <div class="panel hidden" id="gameoverPanel">
     <h1>GAME OVER</h1>
-    <p class="sub">Cygor a gagné cette fois…</p>
+    <p class="sub">T'as perdu…</p>
     <div class="score-big" id="goScore">0</div>
     <p style="color:#7dd3fc;font-size:11px;margin-bottom:14px">VAGUE ATTEINTE : <span id="goWave">1</span></p>
     <input class="name-input" id="nameInput" maxlength="12" placeholder="Ton pseudo (12 car. max)" />
@@ -86,7 +86,7 @@ const db = getFirestore(app);
 
 window._fbSave = async (name, score, wave) => {
   try {
-    await addDoc(collection(db, 'cygor_attack_scores'), {
+    await addDoc(collection(db, 'spacecraft-burster_scores'), {
       name: name.trim().toUpperCase() || 'ANONYME',
       score, wave,
       date: Date.now()
@@ -97,7 +97,7 @@ window._fbSave = async (name, score, wave) => {
 
 window._fbLoad = async () => {
   try {
-    const q = query(collection(db, 'cygor_attack_scores'), orderBy('score','desc'), limit(10));
+    const q = query(collection(db, 'spacecraft-burster_scores'), orderBy('score','desc'), limit(10));
     const snap = await getDocs(q);
     return snap.docs.map(d => d.data());
   } catch(e) { return []; }
@@ -140,13 +140,13 @@ const SY = () => H - 54;
 const SR = 16;
 
 const ETYPES = [
-  { name:'Cygor',    color:'#ef4444', size:20, hp:3, spd:1.1, pts:30, shape:'robot'   },
+  { name:'Extraterstre',    color:'#ef4444', size:20, hp:3, spd:1.1, pts:30, shape:'robot'   },
   { name:'Origamin', color:'#a855f7', size:16, hp:2, spd:1.9, pts:20, shape:'diamond' },
   { name:'Adam',     color:'#f97316', size:14, hp:1, spd:2.5, pts:10, shape:'orb'     },
   { name:'Carrin',   color:'#ec4899', size:18, hp:2, spd:1.5, pts:25, shape:'square'  },
   { name:'Ombre',    color:'#6366f1', size:22, hp:4, spd:1.0, pts:40, shape:'shadow'  },
 ];
-const BOSS_DEF = { name:'CYGOR PRIME', color:'#dc2626', size:38, hp:40, spd:0.65, pts:300, shape:'boss' };
+const BOSS_DEF = { name:'SPACECRAFT PRIME', color:'#dc2626', size:38, hp:40, spd:0.65, pts:300, shape:'boss' };
 
 function enemiesForWave(w) { return 6 + w * 3; }
 function isBossWave(w) { return w % 5 === 0; }
