@@ -1762,7 +1762,9 @@ function update() {
     if (e.hp <= 0) {
       burst(e.x, e.y, e.color, 25, true);
       score += e.pts * wave;
-      BubbleQuest.score(score);
+      if (window.BubbleQuest && typeof window.BubbleQuest.score === 'function') {
+        window.BubbleQuest.score(score);
+      }
       updateHUD();
       if (e.shape !== 'boss') {
         if (Math.random() < 0.2) {
