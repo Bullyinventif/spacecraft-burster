@@ -645,14 +645,6 @@ canvas {
       </div>
     </div>
     
-    <div id="rightColumn">
-      <div class="panel">
-        <h1>🏆 TOP 15 SCORES</h1>
-        <div id="leaderboard">
-          <div id="lbListStart"></div>
-        </div>
-      </div>
-    </div>
   </div>
   
   <div class="panel hidden" id="gameoverPanel">
@@ -661,106 +653,11 @@ canvas {
     <div class="score-big" id="goScore">0</div>
     <p style="color:#7dd3fc;font-size:14px;margin-bottom:20px">VAGUE ATTEINTE : <span id="goWave">1</span></p>
     
-    <input class="name-input" id="nameInput" maxlength="12" placeholder="Ton pseudo (12 car. max)" />
-    <button class="btn" id="saveBtn" onclick="saveScore()">💾 SAUVEGARDER MON SCORE</button>
     <button class="btn secondary" onclick="startGame()">↩ REJOUER</button>
-    
-    <div class="your-score-section" id="yourScoreSection" style="display: none;">
-      <h4>TON SCORE</h4>
-      <div style="color: #7dd3fc; font-weight: bold; font-size: 15px;">
-        <span id="yourScoreValue">0</span> pts - Vague <span id="yourWaveValue">1</span>
-      </div>
-    </div>
-    
-    <div id="leaderboard" style="margin-top:24px">
-      <h3>🏆 MEILLEURS SCORES</h3>
-      <div id="lbListGO"></div>
-    </div>
   </div>
 </div>
 
 <script>
-// ========== CONFIGURATION ==========
-const USE_FIREBASE = false;
-
-const firebaseConfig = {
-  apiKey: "VOTRE_API_KEY",
-  authDomain: "ton-projet.firebaseapp.com",
-  projectId: "ton-projet",
-  storageBucket: "ton-projet.appspot.com",
-  messagingSenderId: "VOTRE_SENDER_ID",
-  appId: "VOTRE_APP_ID"
-};
-
-// ========== LOCAL STORAGE ==========
-const SCORES_KEY = 'spacecraft-burster_scores';
-
-function loadLocalScores() {
-  try {
-    const data = localStorage.getItem(SCORES_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch(e) {
-    return [];
-  }
-}
-
-function saveLocalScore(name, score, wave) {
-  try {
-    const scores = loadLocalScores();
-    scores.push({ name: name.trim().toUpperCase() || 'ANONYME', score, wave, date: Date.now() });
-    scores.sort((a, b) => b.score - a.score);
-    scores.splice(15);
-    localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
-    return true;
-  } catch(e) {
-    console.error('Erreur sauvegarde locale:', e);
-    return false;
-  }
-}
-
-function getTopScores() {
-  if (USE_FIREBASE && window._fbLoad) {
-    return window._fbLoad();
-  }
-  return Promise.resolve(loadLocalScores());
-}
-
-function saveScoreToBackend(name, score, wave) {
-  if (USE_FIREBASE && window._fbSave) {
-    return window._fbSave(name, score, wave);
-  }
-  return Promise.resolve(saveLocalScore(name, score, wave));
-}
-
-if (USE_FIREBASE) {
-  const script = document.createElement('script');
-  script.type = 'module';
-  script.textContent = `
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit }
-      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-    const app = initializeApp(${JSON.stringify(firebaseConfig)});
-    const db = getFirestore(app);
-    window._fbSave = async (name, score, wave) => {
-      try {
-        await addDoc(collection(db, 'spacecraft-burster_scores'), {
-          name: name.trim().toUpperCase() || 'ANONYME',
-          score, wave, date: Date.now()
-        });
-        return true;
-      } catch(e) { return false; }
-    };
-    window._fbLoad = async () => {
-      try {
-        const q = query(collection(db, 'spacecraft-burster_scores'), orderBy('score','desc'), limit(15));
-        const snap = await getDocs(q);
-        return snap.docs.map(d => d.data());
-      } catch(e) { return []; }
-    };
-  `;
-  document.body.appendChild(script);
-}
-
 // ========== CANVAS & GAME STATE ==========
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
@@ -995,70 +892,16 @@ function startGame() {
   loop();
 }
 
-async function saveScore() {
-  const name = document.getElementById('nameInput').value;
-  const btn = document.getElementById('saveBtn');
-  const originalText = btn.textContent;
-  
-  btn.textContent = '⏳ Sauvegarde…';
-  btn.disabled = true;
-  
-  const success = await saveScoreToBackend(name || 'ANONYME', score, wave);
-  
-  if (success) {
-    btn.textContent = '✅ Score sauvegardé !';
-    document.getElementById('yourScoreValue').textContent = score.toLocaleString();
-    document.getElementById('yourWaveValue').textContent = wave;
-    document.getElementById('yourScoreSection').style.display = 'block';
-    loadLB();
-  } else {
-    btn.textContent = '❌ Erreur de sauvegarde';
-  }
-  
-  setTimeout(() => {
-    btn.textContent = originalText;
-    btn.disabled = false;
-  }, 2000);
-}
-
-async function loadLB() {
-  const rows = await getTopScores();
-  ['lbListStart', 'lbListGO'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (!rows.length) {
-      el.innerHTML = '<div style="color:#475569;font-size:12px;text-align:center;padding:12px">Aucun score encore…</div>';
-      return;
-    }
-    const medals = ['🥇', '🥈', '🥉'];
-    const cls = ['gold', 'silver', 'bronze'];
-    el.innerHTML = rows.slice(0, 15).map((r, i) =>
-      `<div class="lb-row ${cls[i] || ''}">
-        <span class="lb-rank">${medals[i] || (i + 1)}</span>
-        <span class="lb-name">${r.name}</span>
-        <span class="lb-score">${r.score.toLocaleString()}</span>
-        <span class="lb-wave">vague ${r.wave}</span>
-      </div>`
-    ).join('');
-  });
-}
-
-window.loadLB = loadLB;
-
 function gameOver() {
   gameRunning = false;
+  BubbleQuest.score(score);
   document.getElementById('goScore').textContent = score.toLocaleString();
   document.getElementById('goWave').textContent = wave;
-  document.getElementById('saveBtn').textContent = '💾 SAUVEGARDER MON SCORE';
-  document.getElementById('saveBtn').disabled = false;
-  document.getElementById('nameInput').value = '';
   document.getElementById('gameoverPanel').classList.remove('hidden');
   document.getElementById('startPanel').classList.add('hidden');
   document.getElementById('overlay').classList.remove('hidden');
-  document.getElementById('yourScoreSection').style.display = 'none';
   document.getElementById('upgradesHUD').innerHTML = '';
   document.getElementById('chargeFill').style.width = '0%';
-  loadLB();
 }
 
 function flashWave(txt, col) {
@@ -1762,9 +1605,6 @@ function update() {
     if (e.hp <= 0) {
       burst(e.x, e.y, e.color, 25, true);
       score += e.pts * wave;
-      if (window.BubbleQuest && typeof window.BubbleQuest.score === 'function') {
-        window.BubbleQuest.score(score);
-      }
       updateHUD();
       if (e.shape !== 'boss') {
         if (Math.random() < 0.2) {
@@ -1976,8 +1816,6 @@ slider.addEventListener('input', function() {
 
 sliderValue.textContent = 'Vague ' + slider.value;
 
-// Load leaderboard
-loadLB();
 </script>
 </body>
 </html>
